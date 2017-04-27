@@ -9,9 +9,9 @@ spuštění aplikace pomocí ./hra
 
 Quests:
 
-Funkcní projekt - # FALSE
-GUI = # FALSE
-TUI = # FALSE
-základní logika = # TRUE
-save = # FALSE
-undo = # FALSE
+Funkcní projekt = <b>FALSE</b><br>
+GUI = <b>FALSE</b><br>
+TUI = <b>FALSE</b><br>
+základní logika = <b>TRUE</b><br>
+save = <b>TRUE</b><br>
+undo = <b>TRUE</b><br>
