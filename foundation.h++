@@ -34,6 +34,10 @@ public:
      Card onTop();
      color myColor();
 
+     /**
+      * @return if final pack is empty
+      */
+     bool empty();
 };
 
 

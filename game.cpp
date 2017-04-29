@@ -23,234 +23,139 @@ void clear(bool ending){
     cout << endl << endl;
 }
 
-int menu(bool err) {
+/**
+*   Tiskne TUI
+*/
+void print_board(Board *board) {
+    Deck *deck = board->getDeck();
+    Deck *grave = board->getGrave();
 
-    string input;
+    vector<Stack*> stacks;
+    vector<Deck*> mags;
+    vector<Foundation*> finals;
+    vector<int> counter;
 
-    cout << "NOVÁ HRA            [N]" << endl;
-    cout << "NAHRÁT ULOŽENOU HRU [U]" << endl;
-    cout << "UKONČIT PROGRAM     [X]" << endl;
-    cout << endl << endl;
-    if(err) {
-        cout << "                  \033[5;31mZadejte prosím platný znak\033[0m\n";
+    for(int i = 0; i < 7; i++){
+        stacks.push_back(board->getStack(i));
+    }
+
+    for(int i = 0; i < 7; i++){
+        mags.push_back(board->getMagazine(i));
+    }
+
+    for(int i = 0; i < 4; i++){
+        finals.push_back(board->getFinal(i));
+    }
+
+    // inicializace counteru
+    for(int i = 0; i < 7; i++)
+        counter.push_back(0);
+
+    //  "vyčištění" okna terminálu
+    cout << CLEAR; //cisteni
+
+    //  příprava rozhraní
+    cout << "Počet karet v balíku: ";
+    cout << to_string(deck->size()) << endl;
+    cout << "Odkládací balíček: ";
+    cout << grave->onTop().toString();
+    cout << "     [L]" << endl;
+    cout << "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -" << endl;
+    cout << "   [A]      [B]      [C]      [D]      [E]      [F]      [G]   ";
+
+    //  převedení "zásobníků" a "stacků" do stringu
+    for(int o = 0; o < 7; o++) {
         cout << endl;
-    }
-    else {
-        cout << endl << endl;
-    }
-    cout << "Vaše volba: ";
+        for(int i = 0; i < 7; i++) {
+            cout << "   ";
 
-    cin >> input;
-    if (input == "N" || input == "n")
-        return 0;
-    if (input == "U" || input == "u")
-        return 1;
-    if (input == "X" || input == "x")
-        return 2;
-    return -1;
-}
+            //  tisknuti "rubu karet"
+            if(mags.at(i)->size() > o) {
+                cout << " # ";
+            }
 
-int in_game(bool err) {
-    string input;
-    cout << "Jakou akci si přejete provést: \n";
-    cout << endl;
-    cout << "LÍZNOUT KARTU          [L]" << endl;
-    cout << "PŘESUNOUT KARTU/STACK  [P]" << endl;
-    cout << "VRÁTIT SE DO MENU      [X]" << endl;
-    cout << endl;
-    if(err) {
-        cout << "                  \033[5;31mZadejte prosím platný znak\033[0m\n";
-        cout << endl;
-    }
-    else {
-        cout << endl << endl;
-    }
-    cout << "Vaše volba: ";
-    cin >> input;
+            //  tisknuti karet ve stacích "lícem"
+            else if(stacks.at(i)->size() > counter.at(i)) {
 
-    if (input == "L" || input == "l")
-        return 0;
-    if (input == "P" || input == "p")
-        return 1;
-    if (input == "X" || input == "x")
-        return 2;
-    return -1;
-}
+                // tiskne kartu ze stacku i na pozici uloženou v counter(i)
+                Stack *ptr_stack = stacks.at(i);
+                int position = counter.at(i);
 
-int card_move(Board *board, bool err) {
-    clear(false);
-    cout << board->toString();
-
-    string input;
-
-    cout << "Zvolte výchozí pozici (písmeno v hranatých závorkách): \n";
-    cout << endl;
-    cout << endl;
-    cout << endl;
-    cout << endl << endl;
-    if(err) {
-        cout << "                  \033[5;31mZadejte prosím platný znak\033[0m\n";
-        cout << endl;
-    }
-    else {
-        cout << endl << endl;
-    }
-    cout << "Vaše volba: ";
-
-    cin >> input;
-
-    //karta z odkládacího balíčku
-    if (input == "L" || input == "l") {
-
-        //kontrola zda-li není odhazovací balíček prázdný
-        if(board->emptyGrave()) {
-            clear(false);
-            cout << board->toString();
-
-            cout << endl;
-            cout << endl;
-            cout << "\033[5;31mOdhazovací balíček je prázný, proveďte prosím jinou akci\033[0m\n";
-            cout << endl;
-            cout << endl << endl;
-            if(err) {
-                cout << "                  \033[5;31mZadejte prosím platný znak\033[0m\n";
-                cout << endl;
+                cout << ptr_stack->get(position).toString();
+                //cout << board->stackGet(counter.at(i), i).toString();
+                counter.at(i) += 1;
             }
             else {
-                cout << endl << endl;
+                cout << "   ";
             }
-            cout << endl;
+            cout << "   ";
+        }
+    }
 
-            usleep(SLEEP_TIME);
-            return -1;
+    // převedení finálních balíků
+
+    cout << endl << endl;
+    cout << "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -" << endl;
+    cout << "Finální balíky: ";
+
+    Foundation *ptr_final;
+    for(int i = 0; i < 4; i++) {
+
+        ptr_final = finals.at(i);
+
+        cout << "   ";
+        if(ptr_final->empty()) {
+            switch(ptr_final->myColor()) {
+                case DIAMONDS:
+                    cout << DIAMOND_F;
+                    break;
+                case HEARDS:
+                    cout << HEART_F;
+                    break;
+                case CLUBS:
+                    cout << CLUB_F;
+                    break;
+                case SPADES:
+                    cout << SPADE_F;
+                    break;
+            }
         }
         else {
-            clear(false);
-            cout << board->toString();
-
-            cout << "Zvolte cílovou pozici (písmeno v hranatých závorkách): \n";
-            cout << endl;
-            cout << "Zvolená karta: " << board->topGrave().toString();
-            cout << endl;
-            cout << endl << endl;
-            if(err) {
-                cout << "                  \033[5;31mZadejte prosím platný znak\033[0m\n";
-                cout << endl;
-            }
-            else {
-                cout << endl << endl;
-            }
-            cout << "Vaše volba: ";
-            cin >> input;
-
-
-            // zvolení stacku jako cílovou destinaci
-            if (input == "A" || input == "a" ||
-                input == "B" || input == "b" ||
-                input == "C" || input == "c" ||
-                input == "D" || input == "d" ||
-                input == "E" || input == "e" ||
-                input == "F" || input == "f" ||
-                input == "G" || input == "g" ) {
-
-
-
-            }
+            cout << ptr_final->onTop().toString();
         }
-
-
-
+        cout << "   ";
     }
-
-    // vybrání stacku
-    if (input == "A" || input == "a" ||
-        input == "B" || input == "b" ||
-        input == "C" || input == "c" ||
-        input == "D" || input == "d" ||
-        input == "E" || input == "e" ||
-        input == "F" || input == "f" ||
-        input == "G" || input == "g" ) {
-
-
-
-
-    }
-    return -1;
-
-
-
-
-}
-
-void start_game() {
-
-    Board *board_1 = new Board();
-    bool err = false;
-    while(true) {
-        clear(false);
-        cout << board_1->toString();
-        switch (in_game(err)) {
-            // chybna volba
-            case -1:
-                err = true;
-                continue;
-
-            // líznout kartu
-            case 0:
-                err = false;
-                board_1->draw();
-                continue;
-
-            // přesunout kartu
-            case 1:
-                card_move(board_1, false);
-
-
-
-
-                break;
-
-            case 2:
-                clear(false);
-                return;
-        };
-
-    }
+    cout << endl <<"                  [W]    [X]    [Y]    [Z]" << endl;
+    cout << "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -" << endl;
 }
 
 // telo hry
 int main(int argc, char const *argv[]) {
-    bool err;
 
+    Board *board_1 = new Board();
+    int input;
+    //board_1 -> draw();
+    //cout << board_1 -> getCard(0, 1).toString();
+
+    // telo programu
     while(true) {
-        clear(false);
-
-        //nejsme ve hre -> zobrazit menu
-        switch (menu(err)) {
-            // chybna volba
-            case -1:
-                err = true;
-                continue;
-
-            //nova hra
-            case 0:
-                //zanoreni se do hry
-                start_game();
-                err = false;
-                break;
-
-            //nacist ulozenou
-            case 1:
-                // TODO
-                break;
-            //ukoncit program
-            case 2:
-                clear(true);
-                return 0;
+        input = 0;
+        print_board(board_1);
+        cin >> input;
+        if(input)
+            board_1->draw();
+        else{
+            cout <<"pis";
+            cin >> input;
+            cout << to_string(board_1->take(board_1->getStack(input)));
+            print_board(board_1);
         }
-
-        // jsme ve hře -> zanořit
 
 
     }
+
+
+
+    //cout << board_1 -> toString();
+
 }

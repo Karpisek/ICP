@@ -60,15 +60,19 @@ Card Stack::pop() {
 
 bool Stack::put(Card card) {
 
+    cout << card.toString()<<endl;
     // test jeslti neni pocet karet vyssi nez max
     if(_stack.size() < _size) {
+        cout << "pocet ok" <<endl;
         // kontrola jestli neni balicek prazdny -> v tom případě lze vložit jen krále
         if(_stack.empty()) {
+            cout << "prazdny balicek ok" <<endl;
             if(card.value() == 13) {
                 _stack.push_back(card);
                 return true;
             }
             else {
+                cout << "prazdny balicek fail" <<endl;
                 return false;
             }
         }
@@ -77,6 +81,7 @@ bool Stack::put(Card card) {
         Card top_card = _stack.back();
 
         if(top_card.compareVal(card) == 1){
+            cout << "kontrola hodnot" <<endl;
             if(!card.sameColor(top_card)) {
                 _stack.push_back(card);
                 return true;
@@ -90,6 +95,7 @@ bool Stack::put(Card card) {
         }
     }
     else {
+        cout << "spatny pocet: " << to_string(_size) <<endl;
         return false;
     }
 

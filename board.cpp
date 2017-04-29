@@ -30,7 +30,7 @@ Board::Board() : _deck(52), _grave(0){
 
     //rozdání prvních karet do stacků
     for(int i = 0; i < 7; i++) {
-        Stack stacks(0);
+        Stack stacks(13);
         stacks.push(_deck.pop());
         _stacks.push_back(stacks);
     }
@@ -48,6 +48,38 @@ Board::Board() : _deck(52), _grave(0){
 
 }
 
+bool Board::take(Stack *stack) {
+    if(!_grave.empty()) {
+        Card card = _grave.pop();
+        if(stack->put(card))
+            return true;
+
+        _grave.put(card);
+    }
+    return false;
+}
+
+
+Deck* Board::getDeck() {
+    return &_deck;
+}
+
+Deck* Board::getGrave() {
+    return &_grave;
+}
+
+Deck* Board::getMagazine(int i) {
+    return &_magazines.at(i);
+}
+
+Stack* Board::getStack(int i) {
+    return &_stacks.at(i);
+}
+
+Foundation* Board::getFinal(int i) {
+    return &_fonds.at(i);
+}
+
 /**
 *  vezme kartu z balíčku a odloží ji na odkládací. pokud je balíček prázdný
 *  "obrátí" odkládací balíček a složí první kartu.
@@ -63,15 +95,7 @@ void Board::draw() {
     }
 }
 
-Card Board::topGrave() {
-    return _grave.onTop();
-}
 
-bool Board::emptyGrave() {
-    if (_grave.size() == 0)
-        return true;
-    return false;
-}
 
 
 string Board::toString() {

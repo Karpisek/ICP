@@ -53,6 +53,14 @@
 
  }
 
+ Card Deck::get(int i) {
+     if(i < _deck.size())
+         return _deck.at(i);
+
+     Card *ret = new Card(0, DIAMONDS);
+     return *ret;
+ }
+
  Card Deck::onTop() {
      if(_deck.empty()) {
          Card *card = new Card(0,DIAMONDS);
@@ -69,6 +77,10 @@
 
  unsigned int Deck::size() {
      return _deck.size();
+ }
+
+ bool Deck::empty() {
+     return _deck.empty();
  }
 
  string Deck::toString() {

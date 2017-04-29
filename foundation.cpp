@@ -79,3 +79,7 @@ Card Foundation::onTop() {
 color Foundation::myColor() {
     return _color;
 }
+
+bool Foundation::empty() {
+    return _fond.empty();
+}

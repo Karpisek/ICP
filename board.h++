@@ -39,11 +39,21 @@ class Board
 
  public:
     Board();
+    Board(string name);
+
     void draw(); // vezme kartu z lizaciho balicku a vlozi ji na odkladaci
-    bool take(string to); // vezme kartu z odkladaciho balicku a pokusi se vlozit na zvoleny balicek
-    bool put(int from, int to); // vezme "stack" a vloziho na zvoleny stack/nebo found
-    Card topGrave();
-    bool emptyGrave();
+    bool take(Stack *stack); // vezme kartu z odkladaciho balicku a pokusi se vlozit na zvoleny balicek
+    bool take(Foundation *fond); //vezme kartu z odkladaciho blaicku a pokusi se ji vlozit na finalní balík
+    bool put(int from, int to); // vezme "stack" a vloziho na zvoleny final
+    bool save(string name); //uloží hru s názvem name
+
+    Deck* getDeck();
+    Deck* getGrave();
+    Deck* getMagazine(int i);
+    Stack* getStack(int i);
+    Foundation* getFinal(int i);
+
+
     string toString(); // pro debug a konsolový výpis
 };
 
