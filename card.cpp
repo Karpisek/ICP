@@ -110,7 +110,9 @@ bool Card::equals(Card card) {
 }
 
 int Card::value() {
-    return _number;
+    if (_number < 14 && _number > 0)
+        return _number;
+    else return 0;
 }
 
 int Card::compareVal(Card card) {

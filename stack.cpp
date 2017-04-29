@@ -58,6 +58,15 @@ Card Stack::pop() {
     return card;
 }
 
+bool Stack::contains(Card* card) {
+    for (int i = 0; i < _stack.size(); i++) {
+        if(get(i).equals(*card)) {
+            return true;
+        }
+    }
+    return false;
+}
+
 bool Stack::put(Card card) {
 
     cout << card.toString()<<endl;

@@ -15,9 +15,13 @@
 
 using namespace std;
 
-Board::Board() : _deck(52), _grave(0){
+Board::Board(int count_of_games) : _deck(52), _grave(0){
+    _name = "hra_";
+    _name += to_string(count_of_games + 1);
     _deck = Deck::createDeck();
     _deck.shuffle();
+    _score = 0;
+    _moves = 0;
 
     //rozdani "zásobníků"
     for(int i = 0; i < 7; i++) {
@@ -80,19 +84,37 @@ Foundation* Board::getFinal(int i) {
     return &_fonds.at(i);
 }
 
+int Board::getScore() {
+    return _score;
+}
+
+int Board::getMoves() {
+    return _moves;
+}
+
+string Board::getName() {
+    return _name;
+}
+
 /**
 *  vezme kartu z balíčku a odloží ji na odkládací. pokud je balíček prázdný
 *  "obrátí" odkládací balíček a složí první kartu.
 */
-void Board::draw() {
-    if(_deck.size() > 0)
-        _grave.put(_deck.pop());
-    else {
-        while(_grave.size() > 0) {
-            _deck.put(_grave.pop());
+bool Board::draw() {
+    if(_deck.size() + _grave.size() > 0) {
+        if(_deck.size() > 0)
+            _grave.put(_deck.pop());
+        else {
+            while(_grave.size() > 0) {
+                _deck.put(_grave.pop());
+            }
+            _grave.put(_deck.pop());
         }
-        _grave.put(_deck.pop());
+
+        _moves++;
+        return true;
     }
+    return false;
 }
 
 

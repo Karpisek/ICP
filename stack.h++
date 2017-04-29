@@ -28,12 +28,14 @@ protected:
 public:
      Stack(unsigned int size);
      Stack pop(Card card);
+     bool contains(Card* card);
      bool put(Card card);
      bool put(Stack stack);
      unsigned int size();
      void push(Card);
      string toString();
      Card get(int i);
+
 
 };
 

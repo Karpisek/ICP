@@ -30,6 +30,9 @@ class Board;
 class Board
 {
  protected:
+    string _name; // pojmenování hry
+    int _score;
+    int _moves;
     Deck _deck; // simuluje lízací balíček
     Deck _grave; // simuluje odkládací balíček
 
@@ -38,10 +41,10 @@ class Board
     vector<Foundation> _fonds; // simluace finálních blaíčků jednotlivých barev (4)
 
  public:
-    Board();
-    Board(string name);
+    Board(int count_of_games);
+    //Board(string name);
 
-    void draw(); // vezme kartu z lizaciho balicku a vlozi ji na odkladaci
+    bool draw(); // vezme kartu z lizaciho balicku a vlozi ji na odkladaci
     bool take(Stack *stack); // vezme kartu z odkladaciho balicku a pokusi se vlozit na zvoleny balicek
     bool take(Foundation *fond); //vezme kartu z odkladaciho blaicku a pokusi se ji vlozit na finalní balík
     bool put(int from, int to); // vezme "stack" a vloziho na zvoleny final
@@ -52,6 +55,11 @@ class Board
     Deck* getMagazine(int i);
     Stack* getStack(int i);
     Foundation* getFinal(int i);
+
+    int getScore();
+    int getMoves();
+
+    string getName();
 
 
     string toString(); // pro debug a konsolový výpis

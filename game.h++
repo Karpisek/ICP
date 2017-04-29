@@ -17,4 +17,24 @@
 
 #define SLEEP_TIME 2000000 // prodleva pri spatnych posunech
 
+#define ERR_VOLBA "\033[5;31mZadána neplatná volba\033[0m"
+
+
+#define MENU 0
+#define MENU_WITH_GAME 10
+#define INGAME 1
+#define CHANGE 2
+#define GAME_CARD 3
+
+#define HINTS 4
+
+#define NOVA_HRA "N"
+#define NACIST "S"
+#define UKONCIT "X"
+
+#define ACTUAL "\033[5;31m\u25A0\033[0m"
+#define TABS "              "
+
+
+
 #endif
