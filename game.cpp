@@ -260,7 +260,7 @@ void print_board(vector<Board*> boards, int state, int focus) {
         }
         cout << "  ";
     }
-    cout << endl <<"                  [W]    [X]    [Y]    [Z]" << endl;
+    cout << endl <<"                  [W]    [R]    [Y]    [Q]" << endl;
     cout << "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -" << endl;
 
 
