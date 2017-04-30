@@ -63,6 +63,44 @@ bool Board::take(Stack *stack) {
     return false;
 }
 
+bool Board::take(Foundation *fond) {
+    Card card = _grave.pop();
+    return fond->put(card);
+}
+
+bool Board::StackToStack(Card *c, Stack *stack_to, Stack *stack_from, Deck *magazine) {
+    Stack poped = stack_from->pop(*c);
+    if(stack_to->put(poped)) {
+        if(stack_from->size() == 0 && !magazine->empty()) {
+            stack_from->push(magazine->pop());
+        }
+        return true;
+    }
+    else {
+        stack_from->push(poped);
+        return false;
+    }
+}
+
+bool Board::StackToFinal(Card *c, Foundation *final_to, Stack *stack_from, Deck *magazine) {
+    Stack poped = stack_from->pop(*c);
+    cout << poped.toString();
+    if(poped.size() > 1 || poped.size() == 0) {
+        stack_from->push(poped);
+        return false;
+    }
+    if(final_to->put(poped)) {
+        if(stack_from->size() == 0 && !magazine->empty()) {
+            stack_from->push(magazine->pop());
+        }
+        return true;
+    }
+    else {
+        stack_from->push(poped);
+        return false;
+    }
+}
+
 
 Deck* Board::getDeck() {
     return &_deck;

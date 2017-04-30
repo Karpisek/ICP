@@ -24,8 +24,9 @@ bool Foundation::put(Stack stack) {
         return false;
     }
     else {
-        Card card = stack.get(1);
+        Card card = stack.get(0);
         int rest = card.hashCode() % 10;
+        cout << to_string(rest);
         int color_num;
         switch (_color) {
             case DIAMONDS:
@@ -41,7 +42,11 @@ bool Foundation::put(Stack stack) {
                 color_num = 3;
                 break;
         }
+        cout << to_string(color_num) << " "<< to_string(rest);
         if(color_num == rest) {
+            //cout << endl;
+            //cout << "carta: " << to_string(card.value()) << "blaicek: " << _fond.size();
+            //cout << endl << card.toString();
             if(card.value() == _fond.size() + 1) {
                 _fond.push_back(card);
                 return true;
@@ -52,6 +57,38 @@ bool Foundation::put(Stack stack) {
         }
         return false;
     }
+
+}
+
+
+bool Foundation::put(Card card) {
+    int rest = card.hashCode() % 10;
+    int color_num;
+    switch (_color) {
+        case DIAMONDS:
+            color_num = 2;
+            break;
+        case HEARDS:
+            color_num = 4;
+            break;
+        case SPADES:
+            color_num = 1;
+            break;
+        case CLUBS:
+            color_num = 3;
+            break;
+    }
+    if(color_num == rest) {
+        if(card.value() == _fond.size() + 1) {
+            _fond.push_back(card);
+            return true;
+        }
+    }
+    else {
+        return false;
+    }
+    return false;
+
 
 }
 

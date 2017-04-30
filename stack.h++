@@ -32,10 +32,11 @@ public:
      bool put(Card card);
      bool put(Stack stack);
      unsigned int size();
-     void push(Card);
+     void push(Card card);
+     void push(Stack stack);
      string toString();
      Card get(int i);
-
+     Card onTop();
 
 };
 

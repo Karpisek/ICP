@@ -47,8 +47,11 @@ class Board
     bool draw(); // vezme kartu z lizaciho balicku a vlozi ji na odkladaci
     bool take(Stack *stack); // vezme kartu z odkladaciho balicku a pokusi se vlozit na zvoleny balicek
     bool take(Foundation *fond); //vezme kartu z odkladaciho blaicku a pokusi se ji vlozit na finalní balík
+    bool StackToStack(Card *c, Stack *stack_to, Stack *stack_from, Deck *magazine);
+    bool StackToFinal(Card *c, Foundation *final_to, Stack *stack_from, Deck *magazine);
     bool put(int from, int to); // vezme "stack" a vloziho na zvoleny final
     bool save(string name); //uloží hru s názvem name
+
 
     Deck* getDeck();
     Deck* getGrave();

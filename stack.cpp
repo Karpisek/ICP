@@ -22,7 +22,6 @@ Stack::Stack(unsigned int size) {
 Stack Stack::pop(Card card) {
     int index = -1;
     for(int i = 0; i < _stack.size(); i++) {
-
         if(_stack.at(i).equals(card)) {
             index = i;
             break;
@@ -52,6 +51,13 @@ void Stack::push(Card card) {
     _stack.push_back(card);
 }
 
+void Stack::push(Stack stack) {
+    for(int i = 0; i < stack.size(); i++) {
+        _stack.push_back(stack.get(i));
+    }
+
+}
+
 Card Stack::pop() {
     Card card = _stack.back();
     _stack.pop_back();
@@ -59,7 +65,7 @@ Card Stack::pop() {
 }
 
 bool Stack::contains(Card* card) {
-    for (int i = 0; i < _stack.size(); i++) {
+    for (int i = 0; i < _stack.size(); i++) {
         if(get(i).equals(*card)) {
             return true;
         }
@@ -112,6 +118,7 @@ bool Stack::put(Card card) {
 
 bool Stack::put(Stack stack) {
     bool one = false;
+    cout << to_string(stack.size());
 
     for(int i = 0; i < stack.size(); i++) {
         one = put(stack.get(i));
@@ -133,6 +140,10 @@ Card Stack::get(int i) {
 
     Card *ret = new Card(0, DIAMONDS);
     return *ret;
+}
+
+Card Stack::onTop() {
+    return _stack.back();
 }
 
 string Stack::toString() {

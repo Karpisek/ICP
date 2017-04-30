@@ -114,14 +114,14 @@ void print_game_control(bool err) {
 }
 
 void print_look_for(bool err) {
-    cout << endl;
+    cout << endl;
     cout << "Zadejte vámi vybranou kartu (vybere se celý stack pod ní)." << endl;
     cout << "Ve tvaru:          [2-10,J,Q,K,A][H,D,S,C]" << endl;
     cout << endl;
 }
 
 void print_choosen(Card *c) {
-    cout << endl;
+    cout << endl;
     cout << "Zadejte vámi vybranou kartu (vybere se celý stack pod ní)." << endl;
     cout << "Ve tvaru:          [2-10,J,Q,K,A][H,D,S,C]" << endl;
     cout << endl;
@@ -197,7 +197,7 @@ void print_board(vector<Board*> boards, int state, int focus) {
     cout << "   [A]      [B]      [C]      [D]      [E]      [F]      [G]   ";
 
     //  převedení "zásobníků" a "stacků" do stringu
-    for(int o = 0; o < 7; o++) {
+    for(int o = 0; o < 13; o++) {
         cout << endl;
         for(int i = 0; i < 7; i++) {
             cout << "   ";
@@ -236,8 +236,9 @@ void print_board(vector<Board*> boards, int state, int focus) {
 
         ptr_final = finals.at(i);
 
-        cout << "   ";
+        cout << "  ";
         if(ptr_final->empty()) {
+            cout << " ";
             switch(ptr_final->myColor()) {
                 case DIAMONDS:
                     cout << DIAMOND_F;
@@ -252,11 +253,12 @@ void print_board(vector<Board*> boards, int state, int focus) {
                     cout << SPADE_F;
                     break;
             }
+            cout << " ";
         }
         else {
             cout << ptr_final->onTop().toString();
         }
-        cout << "   ";
+        cout << "  ";
     }
     cout << endl <<"                  [W]    [X]    [Y]    [Z]" << endl;
     cout << "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -" << endl;
@@ -420,6 +422,7 @@ int main(int argc, char const *argv[]) {
         // Nacházíme se ve hře -> ve výběru karty
         else if(state == GAME_CARD) {
             int number;
+            string abc = "ABCDEFGH"; //pomocna abeceda
             string helper;
             color card_color;
 
@@ -458,6 +461,7 @@ int main(int argc, char const *argv[]) {
             else if(input.size() == 2) {
                 helper = input.substr(0,1);
 
+                // Zadano ciselne
                 if(has_only_digits(helper)) {
                     number = stoi(input.substr(0,1));
                     helper = input.substr(1,1);
@@ -513,12 +517,15 @@ int main(int argc, char const *argv[]) {
             }
             else {
                 err = true;
+                continue;
             }
 
             //TODO vymazat !err
             if(!err) {
                 bool found = false;
                 Card *c = new Card(number, card_color);
+
+                // zadaná karta je neplatná
                 if(c->value() == 0) {
                     err = true;
                     continue;
@@ -527,19 +534,538 @@ int main(int argc, char const *argv[]) {
                 // zadana karta se nachazi na odhazovacim balicku
                 if(c->equals(boards.at(focus - 1)->getGrave()->onTop())) {
                     found = true;
-                    //TODO vyjmuti karty
 
-                    continue;
+                    // předání informace o vybrání karty
+                    print_board(boards, state, focus);
+                    cout << endl;
+                    cout << "Zvolená karta z lízacího balíčku: ";
+                    cout << c->toString() << endl;
+                    cout << "Zvolte stack či finální balík kam si přejete kartu vložit (Písmeno v [ ])";
+                    cout << endl;
+                    print_ending(err);
+
+                    cin >> input;
+
+                    //Vyhodnocení vstupu
+                    // undo [U, u]
+                    if(input == "U" || input == "u") {
+                        state = INGAME;
+
+                        //TODO undo
+                        err = false;
+                        continue;
+
+                    }
+
+                    // zmenit hru [Z, z]
+                    else if(input == "Z" || input == "z") {
+
+                        state = CHANGE;
+                        err = false;
+                        continue;
+
+                    }
+
+                    // Ulozit [S, s]
+                    else if(input == "S" || input == "s") {
+
+                        //TODO uložit hru
+                        err = false;
+                        continue;
+                    }
+
+                    // Vrátit se do menu [X, x]
+                    else if(input == "X" || input == "x") {
+
+                        state = MENU_WITH_GAME;
+                        err = false;
+                        continue;
+                    }
+
+                    // Vložit na stack [A, a]
+                    else if(input == "A" || input == "a") {
+
+                        // Vytvoření ukazatele na zvolený balíček a předaní
+                        // jej jako parametru pro metodu board.take()
+                        // která vezme kartu z hrobu a zahraje na zvolený balíček
+                        Stack *choosen = boards.at(focus - 1)->getStack(0);
+                        if(boards.at(focus - 1)->take(choosen)) {
+                            state = INGAME;
+                            err = false;
+                            continue;
+                        }
+                        else {
+                            err = true;
+                            continue;
+                        }
+                    }
+
+                    // Vložit na stack [B, b]
+                    else if(input == "B" || input == "b") {
+
+                        // Vytvoření ukazatele na zvolený balíček a předaní
+                        // jej jako parametru pro metodu board.take()
+                        // která vezme kartu z hrobu a zahraje na zvolený balíček
+                        Stack *choosen = boards.at(focus - 1)->getStack(1);
+                        if(boards.at(focus - 1)->take(choosen)) {
+                            state = INGAME;
+                            err = false;
+                            continue;
+                        }
+                        else {
+                            err = true;
+                            continue;
+                        }
+                    }
+
+                    // Vložit na stack [C, c]
+                    else if(input == "C" || input == "c") {
+
+                        // Vytvoření ukazatele na zvolený balíček a předaní
+                        // jej jako parametru pro metodu board.take()
+                        // která vezme kartu z hrobu a zahraje na zvolený balíček
+                        Stack *choosen = boards.at(focus - 1)->getStack(2);
+                        if(boards.at(focus - 1)->take(choosen)) {
+                            state = INGAME;
+                            err = false;
+                            continue;
+                        }
+                        else {
+                            err = true;
+                            continue;
+                        }
+                    }
+
+                    // Vložit na stack [D, d]
+                    else if(input == "D" || input == "d") {
+
+                        // Vytvoření ukazatele na zvolený balíček a předaní
+                        // jej jako parametru pro metodu board.take()
+                        // která vezme kartu z hrobu a zahraje na zvolený balíček
+                        Stack *choosen = boards.at(focus - 1)->getStack(3);
+                        if(boards.at(focus - 1)->take(choosen)) {
+                            state = INGAME;
+                            err = false;
+                            continue;
+                        }
+                        else {
+                            err = true;
+                            continue;
+                        }
+                    }
+
+                    // Vložit na stack [E, e]
+                    else if(input == "E" || input == "e") {
+
+                        // Vytvoření ukazatele na zvolený balíček a předaní
+                        // jej jako parametru pro metodu board.take()
+                        // která vezme kartu z hrobu a zahraje na zvolený balíček
+                        Stack *choosen = boards.at(focus - 1)->getStack(4);
+                        if(boards.at(focus - 1)->take(choosen)) {
+                            state = INGAME;
+                            err = false;
+                            continue;
+                        }
+                        else {
+                            err = true;
+                            continue;
+                        }
+                    }
+
+                    // Vložit na stack [F, f]
+                    else if(input == "F" || input == "f") {
+
+                        // Vytvoření ukazatele na zvolený balíček a předaní
+                        // jej jako parametru pro metodu board.take()
+                        // která vezme kartu z hrobu a zahraje na zvolený balíček
+                        Stack *choosen = boards.at(focus - 1)->getStack(5);
+                        if(boards.at(focus - 1)->take(choosen)) {
+                            state = INGAME;
+                            err = false;
+                            continue;
+                        }
+                        else {
+                            err = true;
+                            continue;
+                        }
+                    }
+
+                    // Vložit na stack [G, g]
+                    else if(input == "G" || input == "g") {
+
+                        // Vytvoření ukazatele na zvolený balíček a předaní
+                        // jej jako parametru pro metodu board.take()
+                        // která vezme kartu z hrobu a zahraje na zvolený balíček
+                        Stack *choosen = boards.at(focus - 1)->getStack(6);
+                        if(boards.at(focus - 1)->take(choosen)) {
+                            state = INGAME;
+                            err = false;
+                            continue;
+                        }
+                        else {
+                            err = true;
+                            continue;
+                        }
+                    }
+
+                    // Vložit na final [W, w]
+                    else if(input == "W" || input == "W") {
+
+                        // Vytvoření ukazatele na zvolený balíček a předaní
+                        // jej jako parametru pro metodu board.take()
+                        // která vezme kartu z hrobu a zahraje na zvolený balíček
+                        Foundation *choosen_final = boards.at(focus - 1)->getFinal(0);
+                        if(boards.at(focus - 1)->take(choosen_final)) {
+                            state = INGAME;
+                            err = false;
+                            continue;
+                        }
+                        else {
+                            err = true;
+                            continue;
+                        }
+                    }
+
+                    // Vložit na final [X, X]
+                    else if(input == "R" || input == "r") {
+
+                        // Vytvoření ukazatele na zvolený balíček a předaní
+                        // jej jako parametru pro metodu board.take()
+                        // která vezme kartu z hrobu a zahraje na zvolený balíček
+                        Foundation *choosen_final = boards.at(focus - 1)->getFinal(1);
+                        if(boards.at(focus - 1)->take(choosen_final)) {
+                            state = INGAME;
+                            err = false;
+                            continue;
+                        }
+                        else {
+                            err = true;
+                            continue;
+                        }
+                    }
+
+                    // Vložit na final [Y, Y]
+                    else if(input == "Y" || input == "y") {
+
+                        // Vytvoření ukazatele na zvolený balíček a předaní
+                        // jej jako parametru pro metodu board.take()
+                        // která vezme kartu z hrobu a zahraje na zvolený balíček
+                        Foundation *choosen_final = boards.at(focus - 1)->getFinal(2);
+                        if(boards.at(focus - 1)->take(choosen_final)) {
+                            state = INGAME;
+                            err = false;
+                            continue;
+                        }
+                        else {
+                            err = true;
+                            continue;
+                        }
+                    }
+
+                    // Vložit na final [Q, a]
+                    else if(input == "Q" || input == "q") {
+
+                        // Vytvoření ukazatele na zvolený balíček a předaní
+                        // jej jako parametru pro metodu board.take()
+                        // která vezme kartu z hrobu a zahraje na zvolený balíček
+                        Foundation *choosen_final = boards.at(focus - 1)->getFinal(3);
+                        if(boards.at(focus - 1)->take(choosen_final)) {
+                            state = INGAME;
+                            err = false;
+                            continue;
+                        }
+                        else {
+                            err = true;
+                            continue;
+                        }
+                    }
+
+                    // Vližení jiného znaku
+                    else {
+                        state = GAME_CARD;
+                        err = true;
+                        continue;
+                    }
+
                 }
 
                 // hledani karty ve stacích
                 if(!found) {
                     for(int i = 0; i < 7; i++) {
+                        // nalezení karty ve stacích
                         if(boards.at(focus - 1)->getStack(i)->contains(c)) {
                             found = true;
-                            // TODO vyjmuti stacku
+
+                            //ověření jestli je karta na vrcholu stacku
+                            if(true) {
+
+                                // předání informace o vybrání karty
+                                print_board(boards, state, focus);
+                                cout << endl;
+                                cout << "Zvolená karta: ";
+                                cout << c->toString() << endl;
+                                cout << "Ze stacku: ";
+                                cout << abc[i] << endl;
+                                cout << "Zvolte stack či finální balík kam si přejete stack vložit (Písmeno v [ ])";
+                                cout << endl;
+                                print_ending(err);
+
+                                cin >> input;
+
+                                //Vyhodnocení vstupu
+                                // undo [U, u]
+                                if(input == "U" || input == "u") {
+                                    state = INGAME;
+
+                                    //TODO undo
+                                    err = false;
+                                }
+
+                                // zmenit hru [Z, z]
+                                else if(input == "Z" || input == "z") {
+
+                                    state = CHANGE;
+                                    err = false;
+                                }
+
+                                // Ulozit [S, s]
+                                else if(input == "S" || input == "s") {
+
+                                    //TODO uložit hru
+                                    err = false;
+                                }
+
+                                // Vrátit se do menu [X, x]
+                                else if(input == "X" || input == "x") {
+
+                                    state = MENU_WITH_GAME;
+                                    err = false;
+                                }
+
+                                // Vložit na stack [A, a]
+                                else if(input == "A" || input == "a") {
+
+                                    // Vytvoření ukazatele na zvolený balíček a předaní
+                                    // vyjmutí zvoleného stacku a pokus vložit jej na takový balíček
+                                    Deck *ptr_magazine =  boards.at(focus - 1)->getMagazine(i);
+                                    Stack *ptr_stack_from = boards.at(focus - 1)->getStack(i);
+                                    Stack *ptr_stack_to = boards.at(focus -1)->getStack(0);
+
+                                    if(boards.at(focus - 1)->StackToStack(c, ptr_stack_to, ptr_stack_from, ptr_magazine)) {
+                                        state = INGAME;
+                                        err = false;
+                                    }
+                                    else {
+                                        err = true;
+                                        state = GAME_CARD;
+                                    }
+                                }
+
+                                // Vložit na stack [B, b]
+                                else if(input == "B" || input == "b") {
+
+                                    // Vytvoření ukazatele na zvolený balíček a předaní
+                                    // vyjmutí zvoleného stacku a pokus vložit jej na takový balíček
+                                    Deck *ptr_magazine =  boards.at(focus - 1)->getMagazine(i);
+                                    Stack *ptr_stack_from = boards.at(focus - 1)->getStack(i);
+                                    Stack *ptr_stack_to = boards.at(focus -1)->getStack(1);
+
+                                    if(boards.at(focus - 1)->StackToStack(c, ptr_stack_to, ptr_stack_from, ptr_magazine)) {
+                                        state = INGAME;
+                                        err = false;
+                                    }
+                                    else {
+                                        err = true;
+                                        state = GAME_CARD;
+                                    }
+                                }
+
+                                // Vložit na stack [C, c]
+                                else if(input == "C" || input == "c") {
+
+                                    // Vytvoření ukazatele na zvolený balíček a předaní
+                                    // vyjmutí zvoleného stacku a pokus vložit jej na takový balíček
+                                    Deck *ptr_magazine =  boards.at(focus - 1)->getMagazine(i);
+                                    Stack *ptr_stack_from = boards.at(focus - 1)->getStack(i);
+                                    Stack *ptr_stack_to = boards.at(focus -1)->getStack(2);
+
+                                    if(boards.at(focus - 1)->StackToStack(c, ptr_stack_to, ptr_stack_from, ptr_magazine)) {
+                                        state = INGAME;
+                                        err = false;
+                                    }
+                                    else {
+                                        err = true;
+                                        state = GAME_CARD;
+                                    }
+                                }
+
+                                // Vložit na stack [D, d]
+                                else if(input == "D" || input == "d") {
+
+                                    // Vytvoření ukazatele na zvolený balíček a předaní
+                                    // vyjmutí zvoleného stacku a pokus vložit jej na takový balíček
+                                    Deck *ptr_magazine =  boards.at(focus - 1)->getMagazine(i);
+                                    Stack *ptr_stack_from = boards.at(focus - 1)->getStack(i);
+                                    Stack *ptr_stack_to = boards.at(focus -1)->getStack(3);
+
+                                    if(boards.at(focus - 1)->StackToStack(c, ptr_stack_to, ptr_stack_from, ptr_magazine)) {
+                                        state = INGAME;
+                                        err = false;
+                                    }
+                                    else {
+                                        err = true;
+                                        state = GAME_CARD;
+                                    }
+                                }
+
+                                // Vložit na stack [E, e]
+                                else if(input == "E" || input == "e") {
+
+                                    // Vytvoření ukazatele na zvolený balíček a předaní
+                                    // vyjmutí zvoleného stacku a pokus vložit jej na takový balíček
+                                    Deck *ptr_magazine =  boards.at(focus - 1)->getMagazine(i);
+                                    Stack *ptr_stack_from = boards.at(focus - 1)->getStack(i);
+                                    Stack *ptr_stack_to = boards.at(focus -1)->getStack(4);
+
+                                    if(boards.at(focus - 1)->StackToStack(c, ptr_stack_to, ptr_stack_from, ptr_magazine)) {
+                                        state = INGAME;
+                                        err = false;
+                                    }
+                                    else {
+                                        err = true;
+                                        state = GAME_CARD;
+                                    }
+                                }
+
+                                // Vložit na stack [F, f]
+                                else if(input == "F" || input == "f") {
+
+                                    // Vytvoření ukazatele na zvolený balíček a předaní
+                                    // vyjmutí zvoleného stacku a pokus vložit jej na takový balíček
+                                    Deck *ptr_magazine =  boards.at(focus - 1)->getMagazine(i);
+                                    Stack *ptr_stack_from = boards.at(focus - 1)->getStack(i);
+                                    Stack *ptr_stack_to = boards.at(focus - 1)->getStack(5);
+
+                                    if(boards.at(focus - 1)->StackToStack(c, ptr_stack_to, ptr_stack_from, ptr_magazine)) {
+                                        state = INGAME;
+                                        err = false;
+                                    }
+                                    else {
+                                        err = true;
+                                        state = GAME_CARD;
+                                    }
+                                }
+
+                                // Vložit na stack [G, g]
+                                else if(input == "G" || input == "g") {
+
+                                    // Vytvoření ukazatele na zvolený balíček a předaní
+                                    // vyjmutí zvoleného stacku a pokus vložit jej na takový balíček
+                                    Deck *ptr_magazine =  boards.at(focus - 1)->getMagazine(i);
+                                    Stack *ptr_stack_from = boards.at(focus - 1)->getStack(i);
+                                    Stack *ptr_stack_to = boards.at(focus -1)->getStack(6);
+
+                                    if(boards.at(focus - 1)->StackToStack(c, ptr_stack_to, ptr_stack_from, ptr_magazine)) {
+                                        state = INGAME;
+                                        err = false;
+                                    }
+                                    else {
+                                        err = true;
+                                        state = GAME_CARD;
+                                    }
+                                }
+
+                                // Vložit na stack [W, w]
+                                else if(input == "W" || input == "w") {
+
+                                    // Vytvoření ukazatele na zvolený balíček a předaní
+                                    // vyjmutí zvoleného stacku a pokus vložit jej na takový balíček
+                                    Deck *ptr_magazine =  boards.at(focus - 1)->getMagazine(i);
+                                    Stack *ptr_stack_from = boards.at(focus - 1)->getStack(i);
+                                    Foundation *ptr_final = boards.at(focus -1)->getFinal(0);
+
+                                    if(boards.at(focus - 1)->StackToFinal(c, ptr_final, ptr_stack_from, ptr_magazine)) {
+                                        state = INGAME;
+                                        err = false;
+                                    }
+                                    else {
+                                        err = true;
+                                        state = GAME_CARD;
+                                    }
+                                }
+
+                                // Vložit na final [X, x]
+                                else if(input == "R" || input == "r") {
+
+                                    // Vytvoření ukazatele na zvolený balíček a předaní
+                                    // vyjmutí zvoleného stacku a pokus vložit jej na takový balíček
+                                    Deck *ptr_magazine =  boards.at(focus - 1)->getMagazine(i);
+                                    Stack *ptr_stack_from = boards.at(focus - 1)->getStack(i);
+                                    Foundation *ptr_final = boards.at(focus -1)->getFinal(1);
+
+                                    if(boards.at(focus - 1)->StackToFinal(c, ptr_final, ptr_stack_from, ptr_magazine)) {
+                                        state = INGAME;
+                                        err = false;
+                                    }
+                                    else {
+                                        err = true;
+                                        state = GAME_CARD;
+                                    }
+                                }
+
+                                // Vložit na final [Y, y]
+                                else if(input == "Y" || input == "y") {
+
+                                    // Vytvoření ukazatele na zvolený balíček a předaní
+                                    // vyjmutí zvoleného stacku a pokus vložit jej na takový balíček
+                                    Deck *ptr_magazine =  boards.at(focus - 1)->getMagazine(i);
+                                    Stack *ptr_stack_from = boards.at(focus - 1)->getStack(i);
+                                    Foundation *ptr_final = boards.at(focus - 1)->getFinal(2);
+
+                                    if(boards.at(focus - 1)->StackToFinal(c, ptr_final, ptr_stack_from, ptr_magazine)) {
+                                        state = INGAME;
+                                        err = false;
+                                    }
+                                    else {
+                                        err = true;
+                                        state = GAME_CARD;
+                                    }
+                                }
+
+                                // Vložit na stack [Q, q]
+                                else if(input == "Q" || input == "q") {
+
+                                    // Vytvoření ukazatele na zvolený balíček a předaní
+                                    // vyjmutí zvoleného stacku a pokus vložit jej na takový balíček
+                                    Deck *ptr_magazine =  boards.at(focus - 1)->getMagazine(i);
+                                    Stack *ptr_stack_from = boards.at(focus - 1)->getStack(i);
+                                    Foundation *ptr_final = boards.at(focus - 1)->getFinal(3);
+
+                                    if(boards.at(focus - 1)->StackToFinal(c, ptr_final, ptr_stack_from, ptr_magazine)) {
+                                        state = INGAME;
+                                        err = false;
+                                    }
+                                    else {
+                                        err = true;
+                                        state = GAME_CARD;
+                                    }
+                                }
+
+                                // Vližení jiného znaku
+                                else {
+                                    state = GAME_CARD;
+                                    err = true;
+                                    continue;
+                                }
+
+
+
+                            }
+
+                            break;
                         }
                     }
+
                 }
 
                 if(!found) {
@@ -551,13 +1077,12 @@ int main(int argc, char const *argv[]) {
 
 
 
+                state = INGAME;
 
 
-
-
-                print_board(boards, state, focus);
-                print_choosen(c);
-                print_ending(err);
+                //print_board(boards, state, focus);
+                //print_choosen(c);
+                //print_ending(err);
 
             }
 

@@ -29,6 +29,7 @@ protected:
 public:
      Foundation(color color);
      bool put(Stack stack);
+     bool put(Card card);
      unsigned int size();
      string toString();
      Card onTop();
