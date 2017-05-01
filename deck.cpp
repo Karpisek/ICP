@@ -43,6 +43,7 @@
 }
 
  void Deck::put(Card card) {
+     card.turn();
      _deck.push_back(card);
  }
 
@@ -88,8 +89,9 @@
  string Deck::toString() {
      string output;
      for(int i = 0; i < _deck.size(); i++) {
-         output += _deck.at(i).toString();
-         output += "\n";
+         //output += _deck.at(i).toString();
+         output += _deck.at(i).toSave();
+         output += ",";
      }
      return output;
  }

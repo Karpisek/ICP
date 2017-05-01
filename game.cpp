@@ -16,14 +16,6 @@
 using std::cout;
 using namespace std;
 
-void clear(bool ending){
-    cout << CLEAR; //cisteni
-    if(!ending)
-        cout << "                     Solitaire 2017 - ICP";
-    cout << endl << endl;
-    cout << endl << endl;
-}
-
 bool has_only_digits(const string s){
   return s.find_first_not_of( "0123456789" ) == string::npos;
 }
@@ -55,6 +47,12 @@ void print_menu(int state) {
     else if(state == MENU_WITH_GAME)
         cout << "NOVA HRA [N] | NACIST [S] | VRATIT DO HRY [Z]   | UKONCIT [X]";
 
+    else if(state == NAME)
+        cout << "               Zadejte jmeno nove hry                        ";
+
+    else if(state == LOAD)
+        cout << "                Zvolte uloženou hru                          ";
+
     else
         cout << "UNDO [U] | ZMENIT HRU [Z] | ULOZIT [S] |           | MENU [X]";
 
@@ -62,7 +60,7 @@ void print_menu(int state) {
     cout << "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -" << endl;
     cout << endl;
 
-    if (state == MENU || state == MENU_WITH_GAME) {
+    if (state == MENU || state == MENU_WITH_GAME || state == NAME) {
         for(int i = 0; i < 15; i++)
             cout << endl;
     }
@@ -127,7 +125,6 @@ void print_choosen(Card *c) {
     cout << endl;
     cout << "Zvolená karta: " << c->toString() << endl;
 }
-
 
 /**
 *   Tiskne TUI
@@ -288,9 +285,8 @@ int main(int argc, char const *argv[]) {
             // vyhodnocení vstupu
             // nová hra [N, n]
             if(input == "N" || input == "n") {
-                state = INGAME;
-                boards.push_back(new Board(boards.size()));
-                focus = boards.size(); // změna focusu hry na nově vytvořenou hru
+
+                state = NAME;
                 err = false;
 
             }
@@ -325,15 +321,14 @@ int main(int argc, char const *argv[]) {
             // vyhodnocení vstupu
             // nová hra [N, n]
             if(input == "N" || input == "n") {
-                state = INGAME;
-                boards.push_back(new Board(boards.size()));
-                focus = boards.size(); // změna focusu hry na nově vytvořenou hru
+                state = NAME;
                 err = false;
 
             }
 
             // nacist uloženu [S, s]
             else if(input == "S" || input == "s") {
+                state = LOAD;
                 err = false;
             }
 
@@ -386,14 +381,13 @@ int main(int argc, char const *argv[]) {
             // Ulozit [S, s]
             else if(input == "S" || input == "s") {
 
-                //TODO uložit hru
-                err = false;
+                err = !boards.at(focus - 1)->saveGame();
+
             }
 
             // Vrátit se do menu [X, x]
             else if(input == "X" || input == "x") {
 
-                //TODO uložit hru
                 state = MENU_WITH_GAME;
                 err = false;
             }
@@ -441,7 +435,7 @@ int main(int argc, char const *argv[]) {
             if(input == "U" || input == "u") {
                 state = INGAME;
 
-                //TODO undo
+                boards.at(focus - 1)->undo();
                 err = false;
                 continue;
 
@@ -459,8 +453,7 @@ int main(int argc, char const *argv[]) {
             // Ulozit [S, s]
             else if(input == "S" || input == "s") {
 
-                //TODO uložit hru
-                err = false;
+                err = !boards.at(focus - 1)->saveGame();
                 continue;
             }
 
@@ -480,13 +473,13 @@ int main(int argc, char const *argv[]) {
                     helper = input.substr(2,1);
 
                     err = false;
-                    if(helper == "H")
+                    if(helper == "H" || helper == "h")
                         card_color = HEARDS;
-                    else if(helper == "D")
+                    else if(helper == "D" || helper == "d")
                         card_color = DIAMONDS;
-                    else if(helper == "S")
+                    else if(helper == "S" || helper == "s")
                         card_color = SPADES;
-                    else if(helper == "C")
+                    else if(helper == "C" || helper == "c")
                         card_color = CLUBS;
                     else {
                         err = true;
@@ -503,45 +496,45 @@ int main(int argc, char const *argv[]) {
                     helper = input.substr(1,1);
 
                     err = false;
-                    if(helper == "H")
+                    if(helper == "H" || helper == "h")
                         card_color = HEARDS;
-                    else if(helper == "D")
+                    else if(helper == "D" || helper == "d")
                         card_color = DIAMONDS;
-                    else if(helper == "S")
+                    else if(helper == "S" || helper == "s")
                         card_color = SPADES;
-                    else if(helper == "C")
+                    else if(helper == "C" || helper == "c")
                         card_color = CLUBS;
                     else {
                         err = true;
                     }
                 }
-                else if(helper == "J")
+                else if(helper == "J" || helper == "j")
                     number = 11;
-                else if(helper == "Q")
+                else if(helper == "Q" || helper == "q")
                     number = 12;
-                else if(helper == "K")
+                else if(helper == "K" || helper == "k")
                     number = 13;
-                else if(helper == "A")
+                else if(helper == "A" || helper == "a")
                     number = 1;
                 else {
                     err = true;
                 }
 
-                if(helper == "J" ||
-                   helper == "Q" ||
-                   helper == "K" ||
-                   helper == "A" ) {
+                if(helper == "J" || helper == "j" ||
+                   helper == "Q" || helper == "q" ||
+                   helper == "K" || helper == "k" ||
+                   helper == "A" || helper == "a" ) {
 
                        helper = input.substr(1,1);
 
                        err = false;
-                       if(helper == "H")
+                       if(helper == "H" || helper == "h")
                            card_color = HEARDS;
-                       else if(helper == "D")
+                       else if(helper == "D" || helper == "d")
                            card_color = DIAMONDS;
-                       else if(helper == "S")
+                       else if(helper == "S" || helper == "s")
                            card_color = SPADES;
-                       else if(helper == "C")
+                       else if(helper == "C" || helper == "c")
                            card_color = CLUBS;
                        else {
                            err = true;
@@ -587,7 +580,7 @@ int main(int argc, char const *argv[]) {
                     if(input == "U" || input == "u") {
                         state = INGAME;
 
-                        //TODO undo
+                        boards.at(focus - 1)->undo();
                         err = false;
                         continue;
 
@@ -605,9 +598,7 @@ int main(int argc, char const *argv[]) {
                     // Ulozit [S, s]
                     else if(input == "S" || input == "s") {
 
-                        //TODO uložit hru
-                        err = false;
-                        continue;
+                        err = !boards.at(focus - 1)->saveGame();
                     }
 
                     // Vrátit se do menu [X, x]
@@ -853,7 +844,7 @@ int main(int argc, char const *argv[]) {
                                 if(input == "U" || input == "u") {
                                     state = INGAME;
 
-                                    //TODO undo
+                                    boards.at(focus - 1)->undo();
                                     err = false;
                                 }
 
@@ -867,8 +858,7 @@ int main(int argc, char const *argv[]) {
                                 // Ulozit [S, s]
                                 else if(input == "S" || input == "s") {
 
-                                    //TODO uložit hru
-                                    err = false;
+                                    err = !boards.at(focus - 1)->saveGame();
                                 }
 
                                 // Vrátit se do menu [X, x]
@@ -1105,25 +1095,13 @@ int main(int argc, char const *argv[]) {
                 }
 
                 if(!found) {
-                    //TODO error
+
                     err = true;
                     continue;
                 }
 
-
-
-
                 state = INGAME;
-
-
-                //print_board(boards, state, focus);
-                //print_choosen(c);
-                //print_ending(err);
-
             }
-
-
-
         }
 
         // Nacházíme se v menu pro změnu rozehraných her
@@ -1169,8 +1147,31 @@ int main(int argc, char const *argv[]) {
 
         }
 
+        // nacházime se při výběru jména hry
+        else if(state == NAME) {
+            print_menu(state);
+            print_ending(err);
+            cin >> input;
+            cout << endl;
 
+            state = INGAME;
+            boards.push_back(new Board(input));
+            focus = boards.size(); // změna focusu hry na nově vytvořenou hru
+            err = false;
+        }
 
+        // nacházime se při výběru hry k nahrání
+        else if(state == LOAD) {
+            print_menu(state);
+            print_ending(err);
+            cin >> input;
+            cout << endl;
+
+            state = INGAME;
+            boards.push_back(new Board(input, true));
+            focus = boards.size(); // změna focusu hry na nově vytvořenou hru
+            err = false;
+        }
 
     }
 

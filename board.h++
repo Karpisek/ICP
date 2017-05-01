@@ -46,8 +46,8 @@ class Board
 
  public:
 
-    Board(int count_of_games);
-    //Board(string name);
+    Board(string name);
+    Board(string name, bool history);
 
     bool draw(); // vezme kartu z lizaciho balicku a vlozi ji na odkladaci
     bool take(Stack *stack); // vezme kartu z odkladaciho balicku a pokusi se vlozit na zvoleny balicek
@@ -56,12 +56,14 @@ class Board
     bool StackToFinal(Card *c, Foundation *final_to, Stack *stack_from, Deck *magazine);
     bool put(int from, int to); // vezme "stack" a vloziho na zvoleny final
 
-    bool save(string name); // uloží hru s názvem name
-    bool load(FILE *fp); // načte hru uloženou ve zvolenem
     bool undo(); // vrátí tah (načteno z paměti)
+
+    bool saveGame(); // uloží hru s názvem name
+    bool load(string name); // načte hru uloženou ve zvolenem
 
     void save(); // uloží do paměti
 
+    Board parse();
     Deck* getDeck();
     Deck* getGrave();
     Deck* getMagazine(int i);

@@ -28,8 +28,9 @@
 #define CHANGE 2
 #define GAME_CARD 3
 #define LOAD 4
+#define NAME 5
 
-#define HINTS 5
+//#define HINTS 5
 
 #define NOVA_HRA "N"
 #define NACIST "S"

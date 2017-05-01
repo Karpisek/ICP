@@ -3,6 +3,8 @@ CPPFLAGS = -g -Wall -std=c++11
 LFLAGS = -Wall
 
 default: hra clean
+	rm -rf saves
+	mkdir saves
 
 #test: tests.o card.o deck.o stack.o foundation.o board.o
 #	$(CC) -g -std=c++11 -o test tests.o card.o deck.o stack.o foundation.o board.o

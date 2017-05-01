@@ -26,6 +26,7 @@ using namespace std;
 Card::Card(int number, color color) {
     _color = color;
     _number = number;
+    _up = true;
 }
 
 string Card::toString() {
@@ -84,6 +85,62 @@ string Card::toString() {
     return output;
 }
 
+string Card::toSave() {
+    std::string output;
+
+    switch (_color) {
+        case DIAMONDS:
+            output += "D";  //cervena
+            break;
+
+        case HEARDS:
+            output += "H";  //cervena
+            break;
+
+        case SPADES:
+            output += "S";  //cerna
+            break;
+
+        case CLUBS:
+            output += "C";  //cerna
+            break;
+    }
+
+    switch (_number) {
+        case 1:
+            output += "-A";
+            break;
+        case 2:
+        case 3:
+        case 4:
+        case 5:
+        case 6:
+        case 7:
+        case 8:
+        case 9:
+            output += "-";
+            output += to_string(_number);
+            break;
+        case 10:
+            output += to_string(_number);
+            break;
+        case 11:
+            output += "-J";
+            break;
+        case 12:
+            output += "-Q";
+            break;
+        case 13:
+            output += "-K";
+            break;
+        default:
+            return "   ";
+
+    }
+
+    return output;
+}
+
 int Card::hashCode() {
     int hash;
     switch (_color) {
@@ -114,6 +171,10 @@ int Card::value() {
         return _number;
     else
         return 0;
+}
+
+void Card::turn() {
+    _up = !_up;
 }
 
 int Card::compareVal(Card card) {

@@ -99,8 +99,8 @@ unsigned int Foundation::size() {
 string Foundation::toString() {
     string output;
     for(int i = 0; i < _fond.size(); i++) {
-        output += _fond.at(i).toString();
-        output += "\n";
+        output += _fond.at(i).toSave();
+        output += ",";
     }
     return output;
 }

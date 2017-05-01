@@ -27,15 +27,20 @@ class Card
 protected:
     int _number;
     color _color;
+    bool _up;
 
 public:
     Card(int number, color color);
     string toString();
+    string toSave();
     bool equals(Card);
     int hashCode();
     int value();
     int compareVal(Card card);
     bool sameColor(Card card);
+    bool faceUp();
+    void turn();
+
 };
 
 

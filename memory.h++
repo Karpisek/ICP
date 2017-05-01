@@ -43,8 +43,6 @@ class Memory {
 
         string getName();
 
-
-
 };
 
 #endif

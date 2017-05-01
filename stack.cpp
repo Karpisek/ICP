@@ -149,8 +149,8 @@ Card Stack::onTop() {
 string Stack::toString() {
     string output;
     for(int i = 0; i < _stack.size(); i++) {
-        output += _stack.at(i).toString();
-        output += "\n";
+        output += _stack.at(i).toSave();
+        output += ",";
     }
     return output;
 }
