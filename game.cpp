@@ -117,7 +117,7 @@ void print_look_for(bool err) {
     cout << endl;
     cout << "Zadejte vámi vybranou kartu (vybere se celý stack pod ní)." << endl;
     cout << "Ve tvaru:          [2-10,J,Q,K,A][H,D,S,C]" << endl;
-    cout << endl;
+    cout << "                                  "<<HEART_F<<" "<<DIAMOND_F<<" "<<SPADE_F<<" "<<CLUB_F<< endl;
 }
 
 void print_choosen(Card *c) {
@@ -297,6 +297,8 @@ int main(int argc, char const *argv[]) {
 
             // nacist uloženu [S, s]
             else if(input == "S" || input == "s") {
+
+                state = LOAD;
                 err = false;
             }
 
@@ -368,7 +370,7 @@ int main(int argc, char const *argv[]) {
             if(input == "U" || input == "u") {
                 state = INGAME;
 
-                //TODO undo
+                boards.at(focus - 1)->undo();
                 err = false;
 
             }
@@ -436,7 +438,41 @@ int main(int argc, char const *argv[]) {
 
 
             // Zpracování vstupu (2 nebo 3 místný (jinek error))
-            if(input.size() == 3) {
+            if(input == "U" || input == "u") {
+                state = INGAME;
+
+                //TODO undo
+                err = false;
+                continue;
+
+            }
+
+            // zmenit hru [Z, z]
+            else if(input == "Z" || input == "z") {
+
+                state = CHANGE;
+                err = false;
+                continue;
+
+            }
+
+            // Ulozit [S, s]
+            else if(input == "S" || input == "s") {
+
+                //TODO uložit hru
+                err = false;
+                continue;
+            }
+
+            // Vrátit se do menu [X, x]
+            else if(input == "X" || input == "x") {
+
+                state = INGAME;
+                err = false;
+                continue;
+            }
+
+            else if(input.size() == 3) {
                 helper = input.substr(0,2);
 
                 if(has_only_digits(helper)) {
@@ -577,7 +613,7 @@ int main(int argc, char const *argv[]) {
                     // Vrátit se do menu [X, x]
                     else if(input == "X" || input == "x") {
 
-                        state = MENU_WITH_GAME;
+                        state = INGAME;
                         err = false;
                         continue;
                     }
@@ -838,7 +874,7 @@ int main(int argc, char const *argv[]) {
                                 // Vrátit se do menu [X, x]
                                 else if(input == "X" || input == "x") {
 
-                                    state = MENU_WITH_GAME;
+                                    state = INGAME;
                                     err = false;
                                 }
 

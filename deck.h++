@@ -26,7 +26,7 @@ class Deck
 
  public:
      Deck(unsigned int size);
-     static Deck createDeck();
+     static Deck* createDeck();
      Card pop();
      Card onTop();
 

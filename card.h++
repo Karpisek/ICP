@@ -1,9 +1,9 @@
 /**
- * @file card.cpp
- * @author Miroslav Karpíšek
- * @date 24 April 2017
- * @brief Soubor obsahuje asserttesty pro jednotlive třídy.
- */
+* @file card.cpp
+* @author Miroslav Karpíšek
+* @date 24 April 2017
+* @brief Soubor obsahuje asserttesty pro jednotlive třídy.
+*/
 
 #ifndef CARD_H
 #define CARD_H
@@ -24,18 +24,18 @@ class Card;
 
 class Card
 {
-    protected:
-        int _number;
-        color _color;
+protected:
+    int _number;
+    color _color;
 
-    public:
-        Card(int number, color color);
-        string toString();
-        bool equals(Card);
-        int hashCode();
-        int value();
-        int compareVal(Card card);
-        bool sameColor(Card card);
+public:
+    Card(int number, color color);
+    string toString();
+    bool equals(Card);
+    int hashCode();
+    int value();
+    int compareVal(Card card);
+    bool sameColor(Card card);
 };
 
 

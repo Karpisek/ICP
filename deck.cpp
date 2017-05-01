@@ -26,17 +26,17 @@
      _size = size;
  }
 
- Deck Deck::createDeck() {
-    Deck standart(52);
+ Deck* Deck::createDeck() {
+    Deck *standart = new Deck(52);
     for(int i = 1; i < 14; i++) {
         Card *card_d = new Card(i, DIAMONDS);
         Card *card_h = new Card(i, HEARDS);
         Card *card_s = new Card(i, SPADES);
         Card *card_c = new Card(i, CLUBS);
-        standart.put(*card_d);
-        standart.put(*card_h);
-        standart.put(*card_s);
-        standart.put(*card_c);
+        standart->put(*card_d);
+        standart->put(*card_h);
+        standart->put(*card_s);
+        standart->put(*card_c);
     }
 
     return standart;
@@ -54,8 +54,10 @@
  }
 
  Card Deck::get(int i) {
-     if(i < _deck.size())
-         return _deck.at(i);
+     if(i < _deck.size()) {
+         Card *ptr_ret = new Card(_deck.at(i));
+         return *ptr_ret;
+     }
 
      Card *ret = new Card(0, DIAMONDS);
      return *ret;

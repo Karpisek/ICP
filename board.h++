@@ -25,6 +25,7 @@
 
 using namespace std;
 
+class Memory;
 class Board;
 
 class Board
@@ -33,14 +34,18 @@ class Board
     string _name; // pojmenování hry
     int _score;
     int _moves;
-    Deck _deck; // simuluje lízací balíček
-    Deck _grave; // simuluje odkládací balíček
+    Deck* _deck; // simuluje lízací balíček
+    Deck* _grave; // simuluje odkládací balíček
 
-    vector<Stack> _stacks; // simluace stacků na boardu (7)
-    vector<Deck> _magazines; // simluace "zásobníků" jednotlivých stacků (6)
-    vector<Foundation> _fonds; // simluace finálních blaíčků jednotlivých barev (4)
+    vector<Stack*> _stacks; // simluace stacků na boardu (7)
+    vector<Deck*> _magazines; // simluace "zásobníků" jednotlivých stacků (6)
+    vector<Foundation*> _fonds; // simluace finálních blaíčků jednotlivých barev (4)
+
+    vector<Memory*> _memory;
+    // paměť tahů
 
  public:
+
     Board(int count_of_games);
     //Board(string name);
 
@@ -50,8 +55,12 @@ class Board
     bool StackToStack(Card *c, Stack *stack_to, Stack *stack_from, Deck *magazine);
     bool StackToFinal(Card *c, Foundation *final_to, Stack *stack_from, Deck *magazine);
     bool put(int from, int to); // vezme "stack" a vloziho na zvoleny final
-    bool save(string name); //uloží hru s názvem name
 
+    bool save(string name); // uloží hru s názvem name
+    bool load(FILE *fp); // načte hru uloženou ve zvolenem
+    bool undo(); // vrátí tah (načteno z paměti)
+
+    void save(); // uloží do paměti
 
     Deck* getDeck();
     Deck* getGrave();
