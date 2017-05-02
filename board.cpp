@@ -1043,10 +1043,10 @@ string Board::toString() {
         output += "\n";
         for(int i = 0; i < 7; i++) {
             output += "   ";
-            if(_magazines.at(i)->size() > o) {
+            if((int)_magazines.at(i)->size() > o) {
                 output += " # ";
             }
-            else if(_stacks.at(i)->size() > counter.at(i)) {
+            else if((int)_stacks.at(i)->size() > counter.at(i)) {
                 output += _stacks.at(i)->get(counter.at(i)).toString();
                 counter.at(i) += 1;
             }

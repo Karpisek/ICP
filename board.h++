@@ -46,9 +46,6 @@ class Board
     // paměť tahů
 
  public:
-    friend istream& operator >> (istream& in, Board& obj);
-    friend ostream& operator << (ostream& out, const Board& obj);
-
     Board(string name);
     Board(string name, bool history);
 

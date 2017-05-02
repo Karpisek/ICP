@@ -24,12 +24,12 @@ Memory::Memory(Board *board) {
     this->_deck = new Deck(0);
 
     // kopírování aktualního balíčů
-    for(int i = 0; i < board->getDeck()->size(); i++) {
+    for(int i = 0; i < (int)board->getDeck()->size(); i++) {
         _deck->put(board->getDeck()->get(i));
     }
 
     // kopírování odhazovacího balíčku
-    for(int i = 0; i < board->getGrave()->size(); i++) {
+    for(int i = 0; i < (int)board->getGrave()->size(); i++) {
         _grave->put(board->getGrave()->get(i));
     }
     cout << "pointer adrr: " << _grave << endl;

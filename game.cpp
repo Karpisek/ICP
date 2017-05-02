@@ -84,7 +84,7 @@ void print_change(vector<Board*> boards, int focus) {
     for(int i = 0; i < 15; i++) {
         cout << TABS;
 
-        if(i < boards.size()) {
+        if(i < (int)boards.size()) {
             cout << "[";
 
             // výběr poslední hry
@@ -107,14 +107,14 @@ void print_change(vector<Board*> boards, int focus) {
     }
 }
 
-void print_game_control(bool err) {
+void print_game_control() {
     cout << endl;
     cout << "LÍZNOUT KARTU              [T]" << endl;
     cout << "PŘEJÍT K VÝBĚRU KARTY      [L]" << endl;
     cout << endl;
 }
 
-void print_look_for(bool err) {
+void print_look_for() {
     cout << endl;
     cout << "Zadejte vámi vybranou kartu (vybere se celý stack pod ní)." << endl;
     cout << "Ve tvaru:          [2-10,J,Q,K,A][H,D,S,C]" << endl;
@@ -203,12 +203,12 @@ void print_board(vector<Board*> boards, int state, int focus) {
             cout << "   ";
 
             //  tisknuti "rubu karet"
-            if(mags.at(i)->size() > o) {
+            if((int)mags.at(i)->size() > o) {
                 cout << " # ";
             }
 
             //  tisknuti karet ve stacích "lícem"
-            else if(stacks.at(i)->size() > counter.at(i)) {
+            else if((int)stacks.at(i)->size() > counter.at(i)) {
 
                 // tiskne kartu ze stacku i na pozici uloženou v counter(i)
                 Stack *ptr_stack = stacks.at(i);
@@ -371,7 +371,7 @@ int main(int argc, char const *argv[]) {
                 }
             }
             print_board(boards, state, focus);
-            print_game_control(err);
+            print_game_control();
             print_ending(err);
             cin >> input;
             cout << endl;
@@ -446,7 +446,7 @@ int main(int argc, char const *argv[]) {
 
 
             print_board(boards, state, focus);
-            print_look_for(err);
+            print_look_for();
             print_ending(err);
             cin >> input;
             cout << endl;
@@ -1153,7 +1153,7 @@ int main(int argc, char const *argv[]) {
                 err = false;
             }
             else {
-                for(int i = 0; i < boards.size(); i++) {
+                for(int i = 0; i < (int)boards.size(); i++) {
                     helper = abc[i];
                     helper_low = low_abc[i];
 
@@ -1227,7 +1227,7 @@ int main(int argc, char const *argv[]) {
             cout << endl;
 
             // vyšetření vstupu
-            for(int i = 0; i < boards.at(focus - 1)->hint().size(); i++) {
+            for(int i = 0; i < (int)boards.at(focus - 1)->hint().size(); i++) {
                 // zpět do hry [X,x]
                 if(input == "X" || input == "x") {
                     state = INGAME;
@@ -1237,7 +1237,7 @@ int main(int argc, char const *argv[]) {
 
                 // nasledující hint
                 else if(input == "N" || input == "n") {
-                    if(boards.at(focus - 1)->hint().size() > i + 1) {
+                    if((int)boards.at(focus - 1)->hint().size() > i + 1) {
                         print_menu(state);
                         cout << boards.at(focus - 1)->hint().at(i + 1);
                         print_ending(err);

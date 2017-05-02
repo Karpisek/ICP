@@ -47,7 +47,7 @@ bool Foundation::put(Stack stack) {
             //cout << endl;
             //cout << "carta: " << to_string(card.value()) << "blaicek: " << _fond.size();
             //cout << endl << card.toString();
-            if(card.value() == _fond.size() + 1) {
+            if(card.value() == (int)_fond.size() + 1) {
                 _fond.push_back(card);
                 return true;
             }
@@ -79,7 +79,7 @@ bool Foundation::put(Card card) {
             break;
     }
     if(color_num == rest) {
-        if(card.value() == _fond.size() + 1) {
+        if(card.value() == (int)_fond.size() + 1) {
             _fond.push_back(card);
             return true;
         }
@@ -98,7 +98,7 @@ unsigned int Foundation::size() {
 
 string Foundation::toString() {
     string output;
-    for(int i = 0; i < _fond.size(); i++) {
+    for(int i = 0; i < (int)_fond.size(); i++) {
         output += _fond.at(i).toSave();
         output += ",";
     }

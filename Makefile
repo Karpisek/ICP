@@ -1,5 +1,5 @@
 CC = g++
-CPPFLAGS = -g -Wall -std=c++11
+CPPFLAGS = -g -Wall -Wextra -pedantic -std=c++11 
 LFLAGS = -Wall
 
 default: hra clean

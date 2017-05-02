@@ -55,7 +55,7 @@
  }
 
  Card Deck::get(int i) {
-     if(i < _deck.size()) {
+     if(i < (int)_deck.size()) {
          Card *ptr_ret = new Card(_deck.at(i));
          return *ptr_ret;
      }
@@ -88,7 +88,7 @@
 
  string Deck::toString() {
      string output;
-     for(int i = 0; i < _deck.size(); i++) {
+     for(int i = 0; i < (int)_deck.size(); i++) {
          //output += _deck.at(i).toString();
          output += _deck.at(i).toSave();
          output += ",";

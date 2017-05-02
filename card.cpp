@@ -5,8 +5,6 @@
  * @brief Soubor obsahuje asserttesty pro jednotlive třídy.
  */
 
- // TODO - osetrit spatný karty když number < 1 || > 13
-
 #include "card.h++"
 
 #include <stdbool.h>
@@ -16,6 +14,10 @@
 #include <iostream>
 
 using namespace std;
+
+
+
+
 
 /**
 * Card constructor
@@ -214,6 +216,7 @@ bool Card::sameColor(Card card) {
             }
             else
                 return false;
-
+        default:
+            return false;
     }
 }
