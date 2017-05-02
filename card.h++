@@ -40,6 +40,7 @@ public:
     bool sameColor(Card card);
     bool faceUp();
     void turn();
+    color myColor();
 
 };
 

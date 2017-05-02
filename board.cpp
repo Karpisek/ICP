@@ -17,6 +17,7 @@
 using namespace std;
 
 Board::Board(string name) {
+    _ok = false;
     this->_grave = new Deck(0);
     this->_deck = Deck::createDeck();
 
@@ -51,22 +52,24 @@ Board::Board(string name) {
     _fonds.push_back(fond_C);
     _fonds.push_back(fond_S);
 
+    _ok = true;
+}
 
+bool Board::isOk() {
+    return _ok;
 }
 
 Board::Board(string name, bool) {
 
+    _ok = false;
     string file_name = "saves/" + name + ".save";
     string str;
     char helper = '\0';
-    cout << "0" << endl;
+
     FILE *fp = fopen(file_name.c_str(), "r");
     if(fp == NULL) {
         return;
     }
-
-
-
 
     int number;
     color color;
@@ -617,6 +620,7 @@ Board::Board(string name, bool) {
      }
 
     fclose(fp);
+    _ok = true;
 }
 
 bool Board::take(Stack *stack) {
@@ -893,8 +897,127 @@ bool Board::draw() {
     return false;
 }
 
+vector<string> Board::hint() {
+    // 1.)kontorla vlozeni karty z baliku
+    //      - do hry
+    //      - do finálního
+    // 2.)kontrola pretazeni karet z plánu
+    //      - na plán
+    //      - do finálního
+    // 3.)kontrola zda předchozí ano..
+    //      -pokud prazdny balik tak říct že není jak poradit :D
+    //
 
 
+    vector<string> output;
+
+    // kontrola vlozeni karty
+    for(int i = 0; i < 7; i++) {
+        if(getGrave()->size() > 0) {
+            if(getStack(i)->onTop().compareVal(getGrave()->onTop()) == 1 && getGrave()->onTop().value() != 1) {
+                if(!getStack(i)->onTop().sameColor(getGrave()->onTop())){
+                    string hint;
+                    hint += "Vložte kartu z odhazovacího balíčku: " + getGrave()->onTop().toString();
+                    hint += "\nna kartu: " + getStack(i)->onTop().toString() + "\n";
+                    hint += "nacházající se na " + to_string(i + 1) + ". balíku z leva";
+                    hint += "\n";
+                    output.push_back(hint);
+                }
+            }
+        }
+    }
+
+    // kontrola vlozeni karty na finální
+    for(int i = 0; i < 4; i++) {
+        if(getFinal(i)->empty()) {
+            if(getGrave()->onTop().value() == 1) {
+                if(getGrave()->onTop().myColor() == getFinal(i)->myColor()) {
+                    string hint;
+                    hint += "Vložte Eso z odhazovacího balíčku: " + getGrave()->onTop().toString();
+                    hint += " na finální balík.";
+                    hint += "\n";
+                    output.push_back(hint);
+                }
+            }
+        }
+        else if(getFinal(i)->onTop().hashCode() % 10 == getGrave()->onTop().hashCode() % 10) {
+            if(getFinal(i)->onTop().compareVal(getGrave()->onTop()) == -1) {
+                string hint;
+                hint += "Vložte kartu z odhazovacího balíčku: " + getGrave()->onTop().toString();
+                hint += "\nna kartu: " + getFinal(i)->onTop().toString() + "\n";
+                hint += "nacházající se na finálním balíku";
+                hint += "\n";
+                output.push_back(hint);
+            }
+        }
+    }
+
+    // kontrola pretazeni karet z planu
+    for(int i = 0; i < 7; i++) {
+        for(int o = 0; o < (int)getStack(i)->size(); o++) {
+            for(int x = 0; x < 7; x++) {
+                if(getStack(x)->onTop().compareVal(getStack(i)->get(o)) == 1 && getStack(i)->get(o).value() != 1) {
+                    if(!getStack(i)->get(o).sameColor(getStack(x)->onTop())){
+                        string hint;
+                        hint += "Vložte stacku začínající kartou: " + getStack(i)->get(o).toString();
+                        hint += "\nna kartu: " + getStack(x)->onTop().toString() + "\n";
+                        hint += "nacházající se na " + to_string(i + 1) + ". balíku z leva";
+                        hint += "\n";
+                        output.push_back(hint);
+                    }
+                }
+            }
+        }
+    }
+
+    // kontrola pretazeni na finalni balik z planu
+    for(int i = 0; i < 7; i++) {
+        if(getStack(i)->size() > 0) {
+            for(int x = 0; x < 4; x++) {
+                if(getFinal(x)->empty()) {
+                    if(getStack(i)->onTop().value() == 1) {
+                        if(getGrave()->onTop().myColor() == getFinal(x)->myColor()) {
+                            string hint;
+                            hint += "Vložte Eso z plátna: " + getStack(i)->onTop().toString();
+                            hint += " na finální balík.";
+                            hint += "\n";
+                            output.push_back(hint);
+                        }
+                    }
+                }
+                else if(getFinal(x)->onTop().hashCode() % 10 == getStack(i)->onTop().hashCode() % 10) {
+                    if(getFinal(x)->onTop().compareVal(getStack(i)->onTop()) == -1) {
+                        string hint;
+                        hint += "Vložte kartu z hrací desky" + getStack(i)->onTop().toString();
+                        hint += "\nna kartu: " + getFinal(x)->onTop().toString() + "\n";
+                        hint += "nacházající se na finálním balíku";
+                        hint += "\n";
+                        output.push_back(hint);
+                    }
+                }
+            }
+        }
+    }
+
+    // kontrola jestli jež nějaká rada byla poskytnuta, jinak navrhnuto jine reseni
+    if(output.size() == 0 && getDeck()->size() > 0) {
+        string hint;
+        hint += "S kartami co jsou na hracím plátně, ani s aktuální na odhazovacím balíčku\n";
+        hint += "se nedá nic zahrát, doporučujeme si líznout novou kartu pomocí [T]";
+        hint += "\n";
+        output.push_back(hint);
+    }
+
+    if(output.size() == 0) {
+        string hint;
+        hint += "V aktuální pozici hry, nemáme jak vám poradit, zkuste například UNDO";
+        hint += "\nnebo novou hru";
+        hint += "\n";
+        output.push_back(hint);
+    }
+
+    return output;
+}
 
 string Board::toString() {
     vector<int> counter;

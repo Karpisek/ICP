@@ -53,8 +53,11 @@ void print_menu(int state) {
     else if(state == LOAD)
         cout << "                Zvolte uloženou hru                          ";
 
+    else if(state == HINT)
+        cout << "                Pro návrat do hry [X]                        ";
+
     else
-        cout << "UNDO [U] | ZMENIT HRU [Z] | ULOZIT [S] |           | MENU [X]";
+        cout << "UNDO [U] | ZMENIT HRU [Z] | ULOZIT [S] | POMOC [P] | MENU [X]";
 
     cout << endl;
     cout << "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -" << endl;
@@ -354,6 +357,19 @@ int main(int argc, char const *argv[]) {
 
         // Nacházíme se ve hře
         else if(state == INGAME) {
+            if(boards.at(focus - 1)->getFinal(0)->size() == 13) {
+                if(boards.at(focus - 1)->getFinal(1)->size() == 13) {
+                    if(boards.at(focus - 1)->getFinal(2)->size() == 13) {
+                        if(boards.at(focus - 1)->getFinal(3)->size() == 13) {
+                            cout << "Gratuluji, dohráli jste hru solitaire";
+                            cout << endl << "tvůrci: xkarpi05, ";
+                            sleep(SLEEP_TIME);
+                            state = MENU;
+                            continue;
+                        }
+                    }
+                }
+            }
             print_board(boards, state, focus);
             print_game_control(err);
             print_ending(err);
@@ -383,6 +399,12 @@ int main(int argc, char const *argv[]) {
 
                 err = !boards.at(focus - 1)->saveGame();
 
+            }
+
+            // hint [H, h]
+            else if(input == "P" || input == "p") {
+                state = HINT;
+                err = false;
             }
 
             // Vrátit se do menu [X, x]
@@ -455,6 +477,12 @@ int main(int argc, char const *argv[]) {
 
                 err = !boards.at(focus - 1)->saveGame();
                 continue;
+            }
+
+            // hint [H, h]
+            else if(input == "P" || input == "p") {
+                state = HINT;
+                err = false;
             }
 
             // Vrátit se do menu [X, x]
@@ -1167,10 +1195,69 @@ int main(int argc, char const *argv[]) {
             cin >> input;
             cout << endl;
 
-            state = INGAME;
-            boards.push_back(new Board(input, true));
-            focus = boards.size(); // změna focusu hry na nově vytvořenou hru
-            err = false;
+            if(err && (input == "x" || input == "X") && boards.size() > 0) {
+                err = false;
+                state = MENU_WITH_GAME;
+                continue;
+            }
+            else if(err && (input == "x" || input == "X")){
+                err = false;
+                state = MENU;
+                continue;
+            }
+            Board *board_ptr = new Board(input, true);
+            if(board_ptr->isOk()) {
+                state = INGAME;
+                boards.push_back(board_ptr);
+                focus = boards.size(); // změna focusu hry na nově vytvořenou hru
+                err = false;
+            }
+            else {
+                err = true;
+            }
+
+        }
+
+        // nacházíme se ve hře a žádáme nápovědu
+        else if(state == HINT) {
+            print_menu(state);
+            cout << boards.at(focus - 1)->hint().at(0);
+            print_ending(err);
+            cin >> input;
+            cout << endl;
+
+            // vyšetření vstupu
+            for(int i = 0; i < boards.at(focus - 1)->hint().size(); i++) {
+                // zpět do hry [X,x]
+                if(input == "X" || input == "x") {
+                    state = INGAME;
+                    err = false;
+                    break;
+                }
+
+                // nasledující hint
+                else if(input == "N" || input == "n") {
+                    if(boards.at(focus - 1)->hint().size() > i + 1) {
+                        print_menu(state);
+                        cout << boards.at(focus - 1)->hint().at(i + 1);
+                        print_ending(err);
+                        cin >> input;
+                        cout << endl;
+                        err = false;
+                    }
+                    else {
+                        err = false;
+                        state = INGAME;
+                        break;
+                    }
+                }
+
+                else {
+                    err = true;
+                    break;
+                }
+            }
+
         }
 
     }

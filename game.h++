@@ -15,7 +15,7 @@
 #include "foundation.h++"
 #include "board.h++"
 
-#define SLEEP_TIME 2000000 // prodleva pri spatnych posunech
+#define SLEEP_TIME 5000000 // prodleva pri spatnych posunech
 
 #define ERR_VOLBA "\033[5;31mZadána neplatná volba\033[0m"
 #define CLEAR     "\033[2J"
@@ -29,8 +29,7 @@
 #define GAME_CARD 3
 #define LOAD 4
 #define NAME 5
-
-//#define HINTS 5
+#define HINT 6
 
 #define NOVA_HRA "N"
 #define NACIST "S"

@@ -166,6 +166,10 @@ bool Card::equals(Card card) {
     return hashCode() == card.hashCode();
 }
 
+color Card::myColor() {
+    return _color;
+}
+
 int Card::value() {
     if (_number < 14 && _number > 0)
         return _number;

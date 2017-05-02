@@ -34,6 +34,7 @@ class Board
     string _name; // pojmenování hry
     int _score;
     int _moves;
+    bool _ok;
     Deck* _deck; // simuluje lízací balíček
     Deck* _grave; // simuluje odkládací balíček
 
@@ -45,6 +46,8 @@ class Board
     // paměť tahů
 
  public:
+    friend istream& operator >> (istream& in, Board& obj);
+    friend ostream& operator << (ostream& out, const Board& obj);
 
     Board(string name);
     Board(string name, bool history);
@@ -60,6 +63,7 @@ class Board
 
     bool saveGame(); // uloží hru s názvem name
     bool load(string name); // načte hru uloženou ve zvolenem
+    bool isOk();
 
     void save(); // uloží do paměti
 
@@ -74,6 +78,7 @@ class Board
     int getMoves();
 
     string getName();
+    vector<string> hint();
 
 
     string toString(); // pro debug a konsolový výpis
